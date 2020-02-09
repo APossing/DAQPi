@@ -9,6 +9,15 @@ class TemperatureSensor(ArduinoSensor.ArduinoSensor):
     def __init__(self, serial_device, id, location):
         super(TemperatureSensor, self).__init__(serial_device, id)
         self._location = location
+        self.serial_device.serial_connection.write("StartData".encode())
 
     def read_data(self):
-        self._serial_device.serial_connection.read()
+        data = ""
+        try:
+            if self._serial_device.serial_connection.in_waiting:
+                data = self._serial_device.serial_connection.read_all()
+                print(data)
+        except Exception as ex:
+            self.attempt_reconnect()
+            if self._serial_device.serial_connection is not None:
+                self._serial_device.serial_connection.write("StartData".encode())

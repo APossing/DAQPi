@@ -1,15 +1,20 @@
+# coding: utf-8
 import paho.mqtt.client as mqtt
 import time
 import os
 import SerialInterface
 
 
+
 class MainRunner:
 
     def __init__(self):
         self.arduinos = []
-        self._serial_interface = SerialInterface.SerialInterface()
-        self._sensors = self._serial_interface.get_active_sensors()
+        self._sensors = SerialInterface.get_active_sensors()
+
+    def readData(self):
+        for sensor in self._sensors:
+            sensor.read_data()
 
 
 def get_data_packet():
@@ -40,6 +45,9 @@ def get_data_packet():
 
 if __name__ == '__main__':
     mainRunner = MainRunner()
+    while 1:
+        mainRunner.readData()
+
     # create mqtt instance
     #client = mqtt.Client("wsu_fsae_client_1")
 
