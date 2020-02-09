@@ -64,17 +64,21 @@ def __get_active_ports():
 
 def get_active_sensors():
     active_ports = __get_active_ports()
+    print("sleeping")
     time.sleep(1)
+    print("active")
 
     sensors = []
     for active_port in active_ports:
         active_port.serial_connection.write('DeviceCheck'.encode())
-
+    print("sleeping")
     time.sleep(5)
+    print("active")
 
     for active_port in active_ports:
         z = active_port.serial_connection.in_waiting
         x = active_port.serial_connection.read(z).decode()
+        print(x)
         if x.startswith("1234"):
             x = x.split()
             sensors.append(__assign_sensor_to_obj(active_port, x[1], x[2], x[3:]))
@@ -88,8 +92,9 @@ def attempt_reconnect(id):
 
     for active_port in active_ports:
         active_port.serial_connection.write('DeviceCheck'.encode())
-
+    print("sleeping")
     time.sleep(5)
+    print("active")
 
     for active_port in active_ports:
         x = active_port.serial_connection.read_all().decode()
